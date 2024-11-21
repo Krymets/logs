@@ -1,24 +1,59 @@
 use std::fs;
 use std::io::Error;
 
-fn string_test(
-    a: String,
-    b: &String,
-    c: &str
-) {
 
+// fn string_test(
+//     a: String,
+//     b: &String,
+//     c: &str) {}
+
+fn extract_errors(text: &str) -> Vec<String> {
+    let split_text = text.split("\n");
+
+    let mut result = vec![];
+
+    for line in split_text {
+        if line.starts_with("ERROR") {
+            result.push(line.to_string());
+        }
+    }
+
+    result
 }
 
-fn main() {
-    string_test(String::from("hello"), &String::from("world"), "hello");
+fn main() -> Result<(), Error> {
+
+    let text = fs::read_to_string("logs.txt")?;
+    // println!("{}", text.len());
+    let error_logs = extract_errors(text.as_str());
+    fs::write("logs2.txt", error_logs.join("\n"))?;
+    Ok(())
+
+    // string_test(String::from("hello"), &String::from("world"), "hello");
 
     // let text = fs::read_to_string("logs.txt");
     // println!("{:#?}", text);
 
-    match fs::read_to_string("logs2.txt") {
-        Ok(text) => println!("{:#?}", text.len()),
-        Err(e) => println!("{:#?}", e),
-    }
+    // let mut error_logs = vec![];
+    //
+    //  let text = fs::read_to_string("logs.txt")
+    //      .expect("Something went wrong reading the file");
+    // let error_logs = extract_errors(text.as_str());
+    // fs::write("logs2.txt", error_logs.join("\n"))
+    //     .expect("Something went wrong writing the file");
+
+    // match fs::read_to_string("logs.txt") {
+    //     Ok(text) => {
+    //         let error_logs = extract_errors(text.as_str());
+    //         // println!("{:#?}", error_logs);
+    //         match fs::write("logs2.txt", error_logs.join("\n")) {
+    //             Ok(..) => println!("Log file written to"),
+    //             Err(error) => println!("{}", error),
+    //         }
+    //     }
+    //     Err(e) => println!("{:#?}", e),
+    // }
+    // println!("{:#?}", error_logs);
 
 
     // match devide(5.0, 0.0) {
